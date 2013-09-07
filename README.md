@@ -1,4 +1,4 @@
 rn
 ==
 
-installs shell scrpts to /bin or /sbin
+installs shell scipts to /bin or /sbin

@@ -1,65 +1,78 @@
-#!/bin/bash
+#!/bin/sh
+pause () 
+{
+ read -r
+}
+errorend () 
+{
+ echo  "There must be an fault. Try --help"
+ exit 1
+}
+errorend2 ()
+{
+ echo "Your script is missing. Try --help"
+ exit 1
+}
+name=$1
+#above: functions
 if [ "$1" = "--help" ]; then
-	echo -e "this is to \e[1;31m r\e[0me\e[1;31mn\e[0mew a script.
-u have to write it like : rn >filename< >bin or sbin<
-if it isnt working u have chosen the wrong filename or directory.
-press >enter< to quit"
-	read -r
-	exit 1
+ echo "Help
+This command is for installing shell scripts in /bin
+and /sbin. Superuser is required.
+Usage of rn :rn >filename< >directory(bin/sbin)<
+If there are any problems, check on the syntax first,
+then hate on me."
+ echo -n "press >enter< to quit"
+ pause
+ exit 1
 else
-	if [ "$2" = "bin" ] || [ "$2" = "sbin" ]; then
-		if [ -f "$1" ]; then
-			echo "u will be helped"
-			if [ -f "/$2/$1" ]; then
-				echo "this file already exists. do u wanna overwrite
-(y/n)"
-				read response
-				if [ "$response" = "y" ]; then
-					mv "$1" /"$2"/"$1"
-					chmod a+x /"$2"/"$1"
-					exit 1
-				else
-					if [ "$response" = "n" ]; then
-						echo "u wanna create a new file (y/n)"
-						read response
-						if [ "$response" = "y" ]; then
-							echo -n "insert name [$filename] > "
-							read response
-							if [ -n "$response" ]; then
-								mv "$1" "$response"
-								mv "$response" /"$2"/"$response"
-								chmod a+x /"$2"/"$response"
-								exit 1
-							fi
-						else
-							echo "u dont want to create? ok
-press >enter< to quit"
-							read -r
-							exit 1
-						fi
-					else
-						echo "u dont want to overwrite? ok
-press >enter< to quit"
-						read -r
-						exit 1
-					fi
-				fi
-			else
-				mv "$1" /"$2"/"$1"
-				chmod a+x /"$2"/"$1"
-				exit 1
-
-			fi
-		else
-			echo "dis impossibru. try --help.
-press >enter< to quit"
-			read -r
-			exit 1
-		fi
-	else
-		echo "dis is impossibru. try --help.
-press >enter< to quit"
-		read -r
-		exit 1
-	fi
+ while [ -f "$1" ]
+ do
+  while [ "$2" = "bin" ] || [ "$2" = "sbin" ]
+  do
+   while [ -f /"$2"/"$name" ] || [ -f /"$2"/"$filename" ]
+   do
+    echo -n "This file already exists. Do you want to overwrite it? (Y/N)"
+    read response
+    if [ "$response" = "y" ] || [ "$response" = "Y" ]; then
+     mv "$1" /"$2"/"$name"
+     chmod a+x /"$2"/"$name"
+     echo "Your file has been ovewritten"
+     exit 1
+    else
+     if [ "$response" = "n" ] || [ "$response" = "N" ]; then
+      echo -n "Please enter filename: "
+      read response
+      if [ -f /"$2"/"$response" ]; then
+       name=$response
+       echo "Sorry"
+      else
+       filename=$response
+       mv "$name" "$filename"
+       mv "$filename" /"$2"/"$filename"
+       chmod a+x /"$2"/"$filename"
+       echo "Done. Your file is /$2/$filename"
+       exit 1
+      fi
+     else
+      echo "Unknown Command. Try y/Y or N/n"
+      exit 1
+     fi
+    fi
+   done
+   mv "$name" /"$2"/"$name"
+   chmod a+x /"$2"/"$name"
+   echo "Your file has been installed at /$2/$name"
+   exit 1
+  done
+  errorend
+ done
+ if [ "$name" != "" ]; then
+  echo " !ERROR!
+$name.sh is missing."
+  errorend2
+ else
+  echo " !ERROR! "
+  errorend2
+ fi
 fi
